@@ -1,0 +1,13 @@
+import network
+
+# Crear una instancia de la interfaz de red
+wlan = network.WLAN(network.STA_IF)
+wlan.active(True)
+
+# Obtener la dirección MAC
+mac = wlan.config('mac')
+
+# Convertir la dirección MAC a una cadena de texto
+mac_str = ':'.join('%02x' % b for b in mac)
+
+print('Dirección MAC:', mac_str)
