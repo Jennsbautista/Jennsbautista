@@ -1,0 +1,55 @@
+import network
+import time
+
+# Configura tu SSID y contraseña
+SSID = 'Tu_SSID'
+PASSWORD = 'Tu_Contraseña'
+
+def conectar_wifi(ssid, password, max_retries=10):
+    wlan = network.WLAN(network.STA_IF)  # Configura la interfaz WiFi como estación
+    wlan.active(True)  # Activa la interfaz WiFi
+
+    # Desactivar el punto de acceso si está activo
+    ap = network.WLAN(network.AP_IF)
+    if ap.active():
+        ap.active(False)
+
+    if not wlan.isconnected():
+        print('Conectando a la red WiFi...')
+        wlan.connect(ssid, password)  # Intenta conectarse a la red WiFi
+
+        retries = 0
+        while not wlan.isconnected() and retries < max_retries:
+            print(f'Intento de conexión {retries + 1}/{max_retries}...')
+            time.sleep(2)  # Espera 2 segundos antes de reintentar
+            retries += 1
+
+    if wlan.isconnected():
+        print('Conexión exitosa!')
+        print('Dirección IP:', wlan.ifconfig()[0])
+    else:
+        print('No se pudo conectar a la red WiFi. Verifica el SSID y la contraseña.')
+
+def mostrar_configuracion_red():
+    wlan = network.WLAN(network.STA_IF)
+    if wlan.isconnected():
+        print('Configuración de red actual:')
+        print('Dirección IP:', wlan.ifconfig()[0])
+        print('Máscara de subred:', wlan.ifconfig()[1])
+        print('Puerta de enlace:', wlan.ifconfig()[2])
+        print('Servidor DNS:', wlan.ifconfig()[3])
+    else:
+        print('No está conectado a ninguna red.')
+
+def obtener_mac():
+    wlan = network.WLAN(network.STA_IF)  # Configura la interfaz WiFi como estación
+    wlan.active(True)  # Activa la interfaz WiFi
+    mac = wlan.config('mac')  # Obtén la dirección MAC
+    mac_str = ':'.join('%02x' % b for b in mac)  # Formatea la dirección MAC
+    print('Dirección MAC:', mac_str)
+    return mac_str
+
+# Llamar a las funciones para conectar a la red WiFi y mostrar la configuración
+conectar_wifi(SSID, PASSWORD)
+mostrar_configuracion_red()
+obtener_mac()
