@@ -1,0 +1,33 @@
+import network
+import time
+
+# Datos de la red Wi-Fi
+ssid = "TU_SSID"
+password = "TU_CONTRASEÑA"
+
+# Crear el objeto de la interfaz Wi-Fi
+wifi = network.WLAN(network.STA_IF)
+
+# Activar la interfaz Wi-Fi
+wifi.active(True)
+
+# Intentar conectarse a la red Wi-Fi
+def conectar_wifi():
+    intentos = 0
+    max_intentos = 10  # Máximo número de intentos para conectarse
+    print("Conectando a la red Wi-Fi...")
+    
+    while not wifi.isconnected() and intentos < max_intentos:
+        wifi.connect(ssid, password)
+        time.sleep(2)  # Esperar 2 segundos entre intentos
+        intentos += 1
+        print(f"Intento {intentos}/{max_intentos}...")
+
+    if wifi.isconnected():
+        print("Conectado exitosamente a la red Wi-Fi")
+        print("Dirección IP:", wifi.ifconfig()[0])
+    else:
+        print("No se pudo conectar a la red Wi-Fi después de varios intentos")
+
+# Llamar a la función para conectarse
+conectar_wifi()
